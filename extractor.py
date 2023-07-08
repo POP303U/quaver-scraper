@@ -25,7 +25,7 @@ def extract_images(song_directory, output_directory, scrape_type):
 def take_input():
     print("\x1B[2J\x1B[1;1H");
     print("#-----------------------------------------------------------#");
-    print("|               quaver-scraper [version 1.1]                |");
+    print("|               quaver-scraper [version 1.11]               |");
     print("#-----------------------------------------------------------#");
     scrape_type = input("What type of files do you want to scrape: (.png, .mp3, .qua): ");
     while True:
@@ -35,7 +35,6 @@ def take_input():
             print("Invalid file type, please choose the valid file types listed above.");
     output_dir = input("Enter output directory, example: (C:\Extractor): ");
     input_dir = input("Enter input directory, leave blank if Quaver is installed through Steam: ");
-    
     if len(input_dir) == 0:
         input_dir = "C:\Program Files (x86)\Steam\steamapps\common\Quaver\Songs"
     extract_images(input_dir, output_dir, scrape_type);
