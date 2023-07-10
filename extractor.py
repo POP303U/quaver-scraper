@@ -35,6 +35,14 @@ def get_steam_installation_directory():
     
     return None
 
+def get_song_name_from_qua(file_path):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        for line in file:
+            if 'Title:' in line:
+                song_name = line[line.index('Title:') + len('Title:'):].strip()
+                return song_name
+
+
 def extract_images(song_directory, output_directory, scrape_type):
     print("Scraping...")
     if not os.path.exists(output_directory):
@@ -61,6 +69,7 @@ def take_input():
     print("#-----------------------------------------------------------#");
     print("|               quaver-scraper [version 1.2]                |");
     print("#-----------------------------------------------------------#");
+    #print(get_song_name_from_qua('C:\Program Files (x86)\Steam\steamapps\common\Quaver\Songs\zetoban - Umami Packed Mountaineering\9111.qua'));
     scrape_type = input("What type of files do you want to scrape: (.png, .mp3, .qua): ");
     while True:
         if scrape_type == ".png" or scrape_type == ".mp3" or scrape_type == ".qua":
