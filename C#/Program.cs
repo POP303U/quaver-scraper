@@ -1,70 +1,9 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 class Program
 {
-    static string GetSteamInstallationDirectory()
-    {
-        string system = Environment.OSVersion.Platform.ToString();
-
-        if (system == "Win32NT")
-        {
-            // Check if the Steam installation directory exists in the default location
-            string defaultDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Steam");
-            if (Directory.Exists(defaultDirectory))
-            {
-                return defaultDirectory;
-            }
-
-            // Search for the Steam installation directory on all available drives
-            var drives = DriveInfo.GetDrives()
-                .Where(d => d.DriveType == DriveType.Fixed && d.IsReady)
-                .Select(d => d.Name);
-            foreach (var drive in drives)
-            {
-                string possibleDirectory = Path.Combine(drive, "Program Files (x86)", "Steam");
-                if (Directory.Exists(possibleDirectory))
-                {
-                    return possibleDirectory;
-                }
-            }
-        }
-        else if (system == "Darwin")
-        {
-            string steamDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library", "Application Support", "Steam");
-            if (Directory.Exists(steamDirectory))
-            {
-                return steamDirectory;
-            }
-        }
-        else if (system == "Unix")
-        {
-            string steamDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".steam", "steam");
-            if (Directory.Exists(steamDirectory))
-            {
-                return steamDirectory;
-            }
-        }
-
-        return null;
-    }
-
-    static string SanitizeFilename(string filename)
-    {
-        string invalidChars = @"[<>:""/\\|?*]";
-        string safeChar = " ";
-        return Regex.Replace(filename, invalidChars, safeChar);
-    }
-
-    static string SanitizeDirectoryPath(string directoryPath)
-    {
-        char[] invalidChars = Path.GetInvalidPathChars();
-        return string.Concat(directoryPath.Split(invalidChars, StringSplitOptions.RemoveEmptyEntries));
-    }
-
-    static void Main()
+    static void Main(string[] args)
     {
         Console.Clear();
         Console.WriteLine("#-----------------------------------------------------------#");
@@ -72,19 +11,21 @@ class Program
         Console.WriteLine("#-----------------------------------------------------------#");
 
         string scrapeType;
+        string[] scrapeExtensions;
         while (true)
         {
             Console.Write("What type of files do you want to scrape: (Images, Music): ");
             scrapeType = Console.ReadLine();
+
             if (scrapeType == "Images" || scrapeType == "Music")
             {
                 if (scrapeType == "Images")
                 {
-                    scrapeType = ".png,.jpg,.jpeg";
+                    scrapeExtensions = new string[] { ".png", ".jpg", ".jpeg" };
                 }
-                if (scrapeType == "Music")
+                else if (scrapeType == "Music")
                 {
-                    scrapeType = ".mp3";
+                    scrapeExtensions = new string[] { ".mp3" };
                 }
                 break;
             }
@@ -96,76 +37,91 @@ class Program
 
         Console.Write("Enter output directory, example: (C:\\Extractor): ");
         string destinationDirectory = Console.ReadLine();
-        string rootDirectory = Path.Combine(GetSteamInstallationDirectory(), "steamapps", "common", "Quaver", "Songs");
+
+        string rootDirectory = Path.Combine("C:", "Program Files (x86)", "Steam", "steamapps", "common", "Quaver", "Songs");
 
         if (!Directory.Exists(destinationDirectory))
         {
             Directory.CreateDirectory(destinationDirectory);
         }
+        
+        foreach (string folderName in Directory.GetDirectories(rootDirectory)) {
+            string folderPath = Path.Combine(rootDirectory, folderName);
 
+            foreach (string fileName in Directory.GetFiles(folderPath)) {
+                string filePath = Path.Combine(folderPath, fileName);
+                Console.WriteLine(filePath);
+            }
+        }
+    }
+}
+/*
         // Loop through each folder in the root directory
         foreach (string folderName in Directory.GetDirectories(rootDirectory))
         {
             string folderPath = Path.Combine(rootDirectory, folderName);
 
-            // Check if the current item is a directory
-            if (Directory.Exists(folderPath))
+            // Loop through files in the current folder
+            foreach (string fileName in Directory.GetFiles(folderPath))
             {
-                string imageFilePath = null;
-                string quaFilePath = null;
+                string filePath = Path.Combine(folderPath, fileName);
 
-                // Loop through files in the current folder
-                foreach (string fileName in Directory.GetFiles(folderPath))
+                // Check if the current file is an image file
+                if (Array.Exists(scrapeExtensions, ext => fileName.ToLower().EndsWith(ext)))
                 {
-                    string filePath = Path.Combine(folderPath, fileName);
+                    // Sanitize the file name
+                    string sanitizedFileName = SanitizeFilename(Path.GetFileName(fileName));
 
-                    // Check if the current file is an image file
-                    if (scrapeType.Split(',').Any(extension => fileName.ToLower().EndsWith(extension)))
-                    {
-                        // Sanitize the file name
-                        string sanitizedFileName = SanitizeFilename(fileName);
-
-                        // Copy the image file to the destination directory with the sanitized file name
-                        imageFilePath = Path.Combine(destinationDirectory, sanitizedFileName);
-                        File.Copy(filePath, imageFilePath);
-                    }
-
-                    // Check if the current file is a .qua file
-                    if (fileName.ToLower().EndsWith(".qua"))
-                    {
-                        quaFilePath = filePath;
-                    }
+                    // Copy the image file to the destination directory with the sanitized file name
+                    string imageFilePath = Path.Combine(destinationDirectory, sanitizedFileName);
+                    File.Copy(filePath, imageFilePath);
                 }
 
-                // Process the .qua file if an image file and .qua file are found in the same directory
-                if (!string.IsNullOrEmpty(imageFilePath) && !string.IsNullOrEmpty(quaFilePath))
+                // Check if the current file is a .qua file
+                if (fileName.ToLower().EndsWith(".qua"))
                 {
-                    string[] lines = File.ReadAllLines(quaFilePath);
-                    if (lines.Length >= 7)
-                    {
-                        string titleLine = lines[6].Trim();
-                        if (titleLine.StartsWith("Title: "))
-                        {
-                            string songName = titleLine.Substring(7);
-                            // Sanitize the song name
-                            string sanitizedSongName = SanitizeFilename(songName);
+                    string quaFilePath = filePath;
 
-                            // Rename the copied image file with the sanitized song name
-                            string newImageFileName = $"{sanitizedSongName}{Path.GetExtension(imageFilePath)}";
-                            string newImageFilePath = Path.Combine(destinationDirectory, newImageFileName);
-                            if (File.Exists(newImageFilePath))
+                    // Process the .qua file if an image file and .qua file are found in the same directory
+                    if (File.Exists(imageFilePath) && File.Exists(quaFilePath))
+                    {
+                        using (StreamReader quaFile = new StreamReader(quaFilePath))
+                        {
+                            string[] lines = quaFile.ReadToEnd().Split('\n');
+                            if (lines.Length >= 7)
                             {
-                                // Generate a new file name by appending a random number
-                                string newFileNameWithRandom = $"{sanitizedSongName}_{Guid.NewGuid()}{Path.GetExtension(imageFilePath)}";
-                                newImageFilePath = Path.Combine(destinationDirectory, newFileNameWithRandom);
+                                string titleLine = lines[6].Trim();
+                                if (titleLine.StartsWith("Title: "))
+                                {
+                                    string songName = titleLine.Substring(7);
+                                    // Sanitize the song name
+                                    string sanitizedSongName = SanitizeFilename(songName);
+
+                                    // Rename the copied image file with the sanitized song name
+                                    string newImageFileName = sanitizedSongName + Path.GetExtension(imageFilePath);
+                                    string newImageFilePath = Path.Combine(destinationDirectory, newImageFileName);
+                                    File.Move(imageFilePath, newImageFilePath);
+                                }
                             }
-                            // Ensure the destination directory exists
-                            Directory.CreateDirectory(destinationDirectory);
-                            File.Move(imageFilePath, newImageFilePath);
                         }
                     }
                 }
             }
         }
     }
+
+    static string GetSteamInstallationDirectory()
+    {
+        // Implement the logic to get the Steam installation directory
+        // Example:
+        return "C:\\Steam";
+    }
+
+    static string SanitizeFilename(string fileName)
+    {
+        // Implement the logic to sanitize the file name
+        // Example:
+        return fileName.Replace(" ", "_");
+    }
 }
+*/
