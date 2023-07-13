@@ -45,8 +45,8 @@ print("\x1B[2J\x1B[1;1H")
 print("#-----------------------------------------------------------#")
 print("|               quaver-scraper [version 1.3]                |")
 print("#-----------------------------------------------------------#")
+scrape_type = input("What type of files do you want to scrape: (Images, Music): ")
 while True:
-    scrape_type = input("What type of files do you want to scrape: (Images, Music): ")
     if scrape_type == "Images" or scrape_type == "Music":
         if scrape_type == "Images":
             scrape_type = ('.png', '.jpg', 'jpeg')
