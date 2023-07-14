@@ -55,7 +55,7 @@ while True:
         break
     else:
         print("Invalid file type, please choose the valid file types listed above.")
-destination_directory = input("Enter output directory, example: (C:\Extractor): ")
+destination_directory = input("Enter output directory, example: (C:Extractor): ")
 root_directory = get_steam_installation_directory() + os.path.join('\\', 'steamapps', 'common', 'Quaver', 'Songs')
 
 if not os.path.exists(destination_directory):
