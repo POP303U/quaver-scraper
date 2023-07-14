@@ -19,6 +19,9 @@ Enter .\extractor.py in your terminal
 If the programm fails to create a directory, make sure the path is correct and there is not a conflicting folder.
 
 ### C#
+
+***WARNING C# SUPPORT IS CURRENTLY UNDER DEVELOPMENT***
+
 **Step 1:** Install dotnet core
 
 **Step 2:** Run the programm
