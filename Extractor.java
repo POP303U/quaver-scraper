@@ -2,19 +2,18 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.regex.*;
 
-public class Extractor {
+class Extractor {
     static String getSteamInstallationDirectory() {
         String system = System.getProperty("os.name");
 
-        if (system.contains("Win")) {
+        if (system.contains("Windows")) {
             String defaultDirectory = Paths.get(System.getenv("ProgramFiles(x86)"), "Steam").toString();
             if (Files.exists(Paths.get(defaultDirectory))) {
                 return defaultDirectory;
             }
 
-            File[] drives = File.listRoots();
-            for (File drive : drives) {
-                String possibleDirectory = Paths.get(drive.getPath(), "Program Files (x86)", "Steam").toString();
+            for (File drive : File.listRoots()) {
+                String possibleDirectory = Paths.get(drive.getAbsolutePath(), "Program Files (x86)", "Steam").toString();
                 if (Files.exists(Paths.get(possibleDirectory))) {
                     return possibleDirectory;
                 }
@@ -55,25 +54,23 @@ public class Extractor {
         System.out.println("#-----------------------------------------------------------#");
         System.out.println("|               quaver-scraper [version 1.3]                |");
         System.out.println("#-----------------------------------------------------------#");
-
         String input;
         String allowedExtension = "(\\.jpg|\\.png|\\.jpeg)$";
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
-            System.out.print("What type of files do you want to scrape: (Images, Music): ");
-            input = reader.readLine();
+            System.out.printf("What type of files do you want to scrape: (Images, Music): ");
+            input = System.console().readLine();
             if (input.equalsIgnoreCase("Images")) {
                 break;
             } else if (input.equalsIgnoreCase("Music")) {
                 allowedExtension = "(\\.mp3)$";
                 break;
             } else {
-                System.out.println("Invalid file type, please choose one of the valid file types listed above.");
+                System.out.println("Invalid file type, please choose the valid file types listed above.\n");
+                continue;
             }
         }
-
-        System.out.print("Enter output directory, example: (C:Extractor): ");
-        String destinationDirectory = reader.readLine();
+        System.out.printf("Enter output directory, example: (C:Extractor): ");
+        String destinationDirectory = System.console().readLine();
         String rootDirectory = Paths.get(getSteamInstallationDirectory(), "steamapps", "common", "Quaver", "Songs").toString();
         String quaTitleName = "";
 
@@ -81,21 +78,18 @@ public class Extractor {
             Files.createDirectories(Paths.get(destinationDirectory));
         }
 
-        try (DirectoryStream<Path> folderPaths = Files.newDirectoryStream(Paths.get(rootDirectory))) {
-            for (Path folderPath : folderPaths) {
-                if (Files.isDirectory(folderPath)) {
-                    try (DirectoryStream<Path> filePaths = Files.newDirectoryStream(folderPath)) {
-                        for (Path filePath : filePaths) {
-                            String fileName = filePath.getFileName().toString();
-                            String extension = filePath.getFileName().toString().toLowerCase();
-                            if (filePath.toString().toLowerCase().endsWith(".qua")) {
-                                quaTitleName = sanitizeFilename(getQuaTitle(filePath.toString()));
-                            }
-
-                            if (Pattern.matches(allowedExtension, extension)) {
-                                Files.copy(filePath, Paths.get(destinationDirectory, fileName), StandardCopyOption.REPLACE_EXISTING);
-                                Files.move(Paths.get(destinationDirectory, fileName), Paths.get(destinationDirectory, quaTitleName + extension), StandardCopyOption.REPLACE_EXISTING);
-                            }
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(rootDirectory))) {
+            for (Path folderPath : directoryStream) {
+                try (DirectoryStream<Path> fileStream = Files.newDirectoryStream(folderPath)) {
+                    for (Path filePath : fileStream) {
+                        String fileName = filePath.getFileName().toString();
+                        String extension = filePath.toString().substring(filePath.toString().lastIndexOf('.')).toLowerCase();
+                        if (filePath.toString().toLowerCase().endsWith(".qua")) {
+                            quaTitleName = sanitizeFilename(getQuaTitle(filePath.toString()));
+                        }
+                        if (Pattern.matches(allowedExtension, extension)) {
+                            Files.copy(filePath, Paths.get(destinationDirectory, fileName), StandardCopyOption.REPLACE_EXISTING);
+                            Files.move(Paths.get(destinationDirectory, fileName), Paths.get(destinationDirectory, quaTitleName + extension), StandardCopyOption.REPLACE_EXISTING);
                         }
                     }
                 }
@@ -103,4 +97,3 @@ public class Extractor {
         }
     }
 }
- 

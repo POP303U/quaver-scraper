@@ -77,7 +77,6 @@ class Extractor {
         }
 
         foreach (string folderPath in Directory.GetDirectories(rootDirectory)) {
-
             foreach (string filePath in Directory.GetFiles(folderPath)) {
                 string fileName = Path.GetFileName(filePath);
                 string extension = Path.GetExtension(filePath).ToLower();
