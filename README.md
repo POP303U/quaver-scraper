@@ -1,5 +1,5 @@
 # quaver-scraper
-CLI tool for extracting assets in [Quaver](quavergame.com), currently the Python version is the most stable and functional and should be used if stability and functionality if important to you.
+CLI tool for extracting assets in [Quaver](quavergame.com), currently the Python version is the most stable and functional and should be used if stability and functionality is important to you.
 
 ## Setup
 

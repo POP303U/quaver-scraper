@@ -1,0 +1,2 @@
+hello = "himum"
+puts hello
