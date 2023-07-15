@@ -33,4 +33,4 @@ Open a command prompt or terminal in the folder with the Extractor.rb and enter 
 + Python: Stable (Recommended)
 + Ruby: Stable 
 + C#: Experimental
-+ Java: In Progress 
++ Java: Experimental
