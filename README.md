@@ -1,6 +1,5 @@
 # quaver-scraper
-CLI tool for extracting assets in quaver
-To install and configure the Python program for extracting assets from Quaver, you'll need to follow these steps:
+CLI tool for extracting assets in [Quaver](quavergame.com), currently the Python version is the most stable and functional and should be used if stability and functionality if important to you.
 
 ## Setup
 
@@ -19,10 +18,11 @@ Enter .\extractor.py in your terminal
 If the programm fails to create a directory, make sure the path is correct and there is not a conflicting folder.
 
 ### C#
-
-***WARNING C# SUPPORT IS CURRENTLY UNDER DEVELOPMENT***
-
 **Step 1:** Install dotnet core
 
 **Step 2:** Run the programm
 Open a command prompt or terminal and navigate to the C# directory and Enter 'dotnet run'
+
+## Status
++ Python: Stable
++ C#: Experimental
