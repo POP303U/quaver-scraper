@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-class Program {
+class Extractor {
     static string? GetSteamInstallationDirectory() {
         string system = Environment.OSVersion.Platform.ToString();
 

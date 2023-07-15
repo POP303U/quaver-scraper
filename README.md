@@ -21,8 +21,16 @@ If the programm fails to create a directory, make sure the path is correct and t
 **Step 1:** Install dotnet core
 
 **Step 2:** Run the programm
-Open a command prompt or terminal and navigate to the C# directory and Enter 'dotnet run'
+Open a command prompt or terminal and navigate to the C# directory and enter 'dotnet run'
+
+### Ruby
+**Step 1:** Install Ruby using the Installer
+
+**Step 2:** Run the programm
+Open a command prompt or terminal in the folder with the Extractor.rb and enter 'ruby Extractor.rb'
 
 ## Status
-+ Python: Stable
++ Python: Stable (Recommended)
++ Ruby: Stable 
 + C#: Experimental
++ Java: In Progress
