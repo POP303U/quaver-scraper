@@ -38,7 +38,7 @@ def get_steam_installation_directory():
 
 def sanitize_filename(filename):
     invalid_chars = r'[<>:"/\\|?*]'
-    safe_char = ' '
+    safe_char = ''
     return re.sub(invalid_chars, safe_char, filename)
 
 print("\x1B[2J\x1B[1;1H")
@@ -61,7 +61,6 @@ root_directory = get_steam_installation_directory() + os.path.join('\\', 'steama
 if not os.path.exists(destination_directory):
     os.makedirs(destination_directory)
 
-# Loop through each folder in the root directory
 for folder_name in os.listdir(root_directory):
     folder_path = os.path.join(root_directory, folder_name)
 
@@ -70,7 +69,6 @@ for folder_name in os.listdir(root_directory):
         image_file_path = None
         qua_file_path = None
 
-        # Loop through files in the current folder
         for file_name in os.listdir(folder_path):
             file_path = os.path.join(folder_path, file_name)
 
@@ -78,7 +76,6 @@ for folder_name in os.listdir(root_directory):
             if file_name.lower().endswith(scrape_type):
                 # Sanitize the file name
                 sanitized_file_name = sanitize_filename(file_name)
-
                 # Copy the image file to the destination directory with the sanitized file name
                 image_file_path = shutil.copy(file_path, os.path.join(destination_directory, sanitized_file_name))
 
