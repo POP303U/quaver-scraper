@@ -70,4 +70,4 @@ Dir.glob(File.join(root_directory, '**/*')).each do |path|
       FileUtils.cp(path, destination_path, preserve: false)
     end
   end
-end
+end 

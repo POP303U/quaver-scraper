@@ -97,4 +97,4 @@ for folder_name in os.listdir(root_directory):
                         # Rename the copied image file with the sanitized song name
                         new_image_file_name = f'{sanitized_song_name}{os.path.splitext(image_file_path)[1]}'
                         new_image_file_path = os.path.join(destination_directory, new_image_file_name)
-                        shutil.move(image_file_path, new_image_file_path)
+                        shutil.move(image_file_path, new_image_file_path) 
