@@ -29,8 +29,17 @@ Open a command prompt or terminal and navigate to the C# directory and enter 'do
 **Step 2:** Run the programm
 Open a command prompt or terminal in the folder with the Extractor.rb and enter 'ruby Extractor.rb'
 
+### Kotlin
+**Step 1:** Install Intellij IDE
+
+**Step 2:** Open the Kotlin folder in Intellij and run the Project
+
+## Java
+***IN PROGRESS***
+
 ## Status
-+ Python: Stable (Recommended)
++ Kotlin: Stable (Recommended)
++ Python: Stable
 + Ruby: Stable 
 + C#: Experimental
 + Java: Experimental
