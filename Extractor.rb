@@ -27,9 +27,9 @@ def sanitize_filename(filename)
   filename.gsub(invalid_chars, safe_char)
 end
 
-puts "#-----------------------------------------------------------#"
-puts "|               quaver-scraper [version 1.3]                |"
-puts "#-----------------------------------------------------------#"
+puts '#-----------------------------------------------------------#'
+puts '|               quaver-scraper [version 1.3]                |'
+puts '#-----------------------------------------------------------#'
 
 input = nil
 allowed_extension = /\.(jpg|png|jpeg)$/
