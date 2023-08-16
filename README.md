@@ -34,7 +34,7 @@ Open a command prompt or terminal in the folder with the Extractor.rb and enter 
 
 **Step 2:** Open the Kotlin folder in Intellij and run the Project
 
-## Java
+### Java
 ***IN PROGRESS***
 
 ## Status

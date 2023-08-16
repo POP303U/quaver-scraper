@@ -92,7 +92,7 @@ class Extractor
             }
         }
         Console.Write("Enter output directory, example: (C:Extractor): ");
-        string? destinationDirectory = Console.ReadLine();
+        string? destinationDirectory = Console.ReadLine() ? "C:Extractor";
         string rootDirectory = GetSteamInstallationDirectory() + Path.Combine("\\", "steamapps", "common", "Quaver", "Songs");
         string quaTitleName = string.Empty;
 
